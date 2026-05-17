@@ -1,0 +1,180 @@
+:root {
+    --primary-color: #2563eb;
+    --hover-color: #1d4ed8;
+    --bg-color: #f8fafc;
+    --today-border: #eab308;
+    --today-bg: #fef08a;
+    --event-bg: #dbeafe;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e2e8f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.calendar-wrapper {
+    background: white;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.header button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.header button:hover { background-color: var(--hover-color); }
+.header h2 { margin: 0; font-size: 1.5rem; color: #1e293b; text-align: center; }
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 15px;
+}
+
+.secondary-btn {
+    background-color: #475569;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.secondary-btn:hover { background-color: #334155; }
+#exportBtn { background-color: #10b981; }
+#exportBtn:hover { background-color: #059669; }
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+/* --- אנימציות - בונוס 3: שיפור דרמטי --- */
+
+/* 1. אנימציית כניסה של החודש/שבוע כשהוא מתחלף */
+.fade-in { 
+    /* הגדלנו את הזמן כדי שהיא תהיה ברורה יותר, ease-out נותן תחושה חלקה בסוף */
+    animation: fadeIn 0.6s ease-out; 
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        /* הגברנו את הקפיצה מלמטה מ-5px ל-20px */
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* 2. אנימציית "קפיצה" כשמוסיפים אירוע חדש (או עורכים) */
+.pop-in { 
+    /* cubic-bezier נותן אפקט של 'קפיץ' (האלמנט גדל קצת יותר מדי ואז חוזר לגודל המקורי) */
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- שאר הסגנונות ללא שינוי --- */
+
+.day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    overflow-y: auto;
+    position: relative;
+}
+
+.day:hover:not(.empty) {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.day.empty { background-color: transparent; cursor: default; }
+
+.day.today {
+    background-color: var(--today-bg);
+    border: 2px solid var(--today-border);
+}
+
+.date-number { 
+    font-weight: bold; 
+    font-size: 0.85rem; 
+    color: #1e293b; 
+    position: absolute;
+    top: 5px;
+    right: 8px;
+}
+
+.heb-date {
+    font-size: 0.85rem;
+    color: #334155;
+    margin-top: 18px; 
+    margin-bottom: 4px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.holiday-text {
+    font-size: 0.75rem;
+    color: #d97706;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.event-text {
+    margin-top: auto;
+    background-color: var(--event-bg);
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    padding: 3px 5px;
+    border-radius: 4px;
+    word-break: break-word;
+    text-align: center;
+}
