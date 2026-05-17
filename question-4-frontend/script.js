@@ -8,7 +8,6 @@ let isWeeklyView = false;
 let events = JSON.parse(localStorage.getItem('calendarEvents')) || {};
 let holidaysCache = {}; 
 
-// חדש: משתנה לשמירת ה-ID של התא שכרגע ערכנו, כדי להפעיל עליו את האנימציה
 let lastEditedDateKey = null;
 
 const hebrewDayNumericFormatter = new Intl.DateTimeFormat('en-US-u-ca-hebrew', { day: 'numeric' });
@@ -90,7 +89,6 @@ async function renderCalendar() {
         const dayDiv = document.createElement('div');
         dayDiv.classList.add('day');
 
-        // *** בונוס 3: לוגיקה משופרת להפעלת אנימציית 'pop-in' ***
         // אם התא הזה הוא התא האחרון שכרגע ערכנו, אנחנו מוסיפים לו את קלאס האנימציה
         if (eventKey === lastEditedDateKey) {
             dayDiv.classList.add('pop-in');
@@ -141,7 +139,6 @@ async function renderCalendar() {
                 }
                 localStorage.setItem('calendarEvents', JSON.stringify(events));
 
-                // חדש: מסמנים את התא שכרגע ערכנו כדי ש-renderCalendar יפעיל עליו את האנימציה
                 lastEditedDateKey = eventKey;
                 renderCalendar(); // מרנדרים מחדש כדי שרואים את השינוי
             }
