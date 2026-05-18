@@ -98,6 +98,7 @@ async function renderCalendar() {
         const dayDiv = document.createElement('div');
         dayDiv.classList.add('day');
 
+        // אם התא הזה הוא התא האחרון שכרגע ערכנו, אנחנו מוסיפים לו את קלאס האנימציה
         if (eventKey === lastEditedDateKey) {
             dayDiv.classList.add('pop-in');
             lastEditedDateKey = null; 
@@ -138,7 +139,18 @@ async function renderCalendar() {
 
         // פתיחת המודאל בלחיצה על יום
         dayDiv.addEventListener('click', () => {
-            openEventModal(eventKey, i, m + 1, y);
+            const eventDesc = prompt(`הכנס אירוע לתאריך ${i}.${m + 1}.${y}:`, events[eventKey] || '');
+            if (eventDesc !== null) {
+                if (eventDesc.trim() === '') {
+                    delete events[eventKey];
+                } else {
+                    events[eventKey] = eventDesc;
+                }
+                localStorage.setItem('calendarEvents', JSON.stringify(events));
+
+                lastEditedDateKey = eventKey;
+                renderCalendar(); // מרנדרים מחדש כדי שרואים את השינוי
+            }
         });
 
         daysContainer.appendChild(dayDiv);
