@@ -3,13 +3,22 @@ const daysContainer = document.getElementById('daysContainer');
 const monthYearDisplay = document.getElementById('monthYear');
 const toggleViewBtn = document.getElementById('toggleViewBtn');
 
+// משתני המודאל
+const eventModal = document.getElementById('eventModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalDateDisplay = document.getElementById('modalDateDisplay');
+const eventInput = document.getElementById('eventInput');
+const saveEventBtn = document.getElementById('saveEventBtn');
+const deleteEventBtn = document.getElementById('deleteEventBtn');
+const cancelEventBtn = document.getElementById('cancelEventBtn');
+
 let currentDate = new Date();
 let isWeeklyView = false;
 let events = JSON.parse(localStorage.getItem('calendarEvents')) || {};
 let holidaysCache = {}; 
 
-// חדש: משתנה לשמירת ה-ID של התא שכרגע ערכנו, כדי להפעיל עליו את האנימציה
 let lastEditedDateKey = null;
+let currentEditingDateKey = null; 
 
 const hebrewDayNumericFormatter = new Intl.DateTimeFormat('en-US-u-ca-hebrew', { day: 'numeric' });
 const hebrewMonthFormatter = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', { month: 'long' });
@@ -53,7 +62,6 @@ async function renderCalendar() {
 
     daysContainer.innerHTML = '';
     
-    // הפעלה מחדש של אנימציית הכניסה לחודש/שבוע (הפכנו אותה לברורה יותר)
     daysContainer.classList.remove('fade-in');
     void daysContainer.offsetWidth; 
     daysContainer.classList.add('fade-in');
@@ -90,11 +98,8 @@ async function renderCalendar() {
         const dayDiv = document.createElement('div');
         dayDiv.classList.add('day');
 
-        // *** בונוס 3: לוגיקה משופרת להפעלת אנימציית 'pop-in' ***
-        // אם התא הזה הוא התא האחרון שכרגע ערכנו, אנחנו מוסיפים לו את קלאס האנימציה
         if (eventKey === lastEditedDateKey) {
             dayDiv.classList.add('pop-in');
-            // מאפסים את המשתנה מיד כדי שהאנימציה לא תקרה שוב ברענון הבא
             lastEditedDateKey = null; 
         }
 
@@ -131,20 +136,9 @@ async function renderCalendar() {
             dayDiv.appendChild(eventDiv);
         }
 
+        // פתיחת המודאל בלחיצה על יום
         dayDiv.addEventListener('click', () => {
-            const eventDesc = prompt(`הכנס אירוע לתאריך ${i}.${m + 1}.${y}:`, events[eventKey] || '');
-            if (eventDesc !== null) {
-                if (eventDesc.trim() === '') {
-                    delete events[eventKey];
-                } else {
-                    events[eventKey] = eventDesc;
-                }
-                localStorage.setItem('calendarEvents', JSON.stringify(events));
-
-                // חדש: מסמנים את התא שכרגע ערכנו כדי ש-renderCalendar יפעיל עליו את האנימציה
-                lastEditedDateKey = eventKey;
-                renderCalendar(); // מרנדרים מחדש כדי שרואים את השינוי
-            }
+            openEventModal(eventKey, i, m + 1, y);
         });
 
         daysContainer.appendChild(dayDiv);
@@ -152,6 +146,65 @@ async function renderCalendar() {
     }
 }
 
+// פונקציות חלון קופץ
+function openEventModal(eventKey, day, month, year) {
+    currentEditingDateKey = eventKey;
+    modalDateDisplay.textContent = `תאריך: ${day}/${month}/${year}`;
+    
+    if (events[eventKey]) {
+        modalTitle.textContent = "עריכת אירוע";
+        eventInput.value = events[eventKey];
+        deleteEventBtn.classList.remove('hidden');
+    } else {
+        modalTitle.textContent = "הוספת אירוע";
+        eventInput.value = "";
+        deleteEventBtn.classList.add('hidden');
+    }
+    
+    eventModal.classList.remove('hidden');
+    eventInput.focus();
+}
+
+function closeEventModal() {
+    eventModal.classList.add('hidden');
+    currentEditingDateKey = null;
+}
+
+saveEventBtn.addEventListener('click', () => {
+    if (!currentEditingDateKey) return;
+    
+    const eventDesc = eventInput.value.trim();
+    if (eventDesc === '') {
+        delete events[currentEditingDateKey];
+    } else {
+        events[currentEditingDateKey] = eventDesc;
+    }
+    
+    localStorage.setItem('calendarEvents', JSON.stringify(events));
+    lastEditedDateKey = currentEditingDateKey;
+    renderCalendar();
+    closeEventModal();
+});
+
+deleteEventBtn.addEventListener('click', () => {
+    if (!currentEditingDateKey) return;
+    
+    delete events[currentEditingDateKey];
+    localStorage.setItem('calendarEvents', JSON.stringify(events));
+    lastEditedDateKey = currentEditingDateKey;
+    renderCalendar();
+    closeEventModal();
+});
+
+cancelEventBtn.addEventListener('click', closeEventModal);
+
+eventModal.addEventListener('click', (e) => {
+    if (e.target === eventModal) {
+        closeEventModal();
+    }
+});
+
+// מאזיני כפתורים כלליים
 document.getElementById('prevBtn').addEventListener('click', () => {
     if (isWeeklyView) {
         currentDate.setDate(currentDate.getDate() - 7);

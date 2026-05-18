@@ -1,34 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>לוח שנה חודשי ושבועי - משימה 4</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>לוח שנה חודשי ושבועי</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div class="calendar-wrapper">
-        <div class="header">
-            <button id="prevBtn">הקודם &gt;</button>
-            <div class="title-area">
-                <h2 id="monthYear"></h2>
-            </div>
-            <button id="nextBtn">&lt; הבא</button>
+      <div class="header">
+        <button id="prevBtn">הקודם &gt;</button>
+        <div class="title-area">
+          <h2 id="monthYear"></h2>
         </div>
+        <button id="nextBtn">&lt; הבא</button>
+      </div>
 
-        <div class="controls">
-            <button id="toggleViewBtn" class="secondary-btn">🔄 מעבר לתצוגה שבועית</button>
-            <button id="exportBtn" class="secondary-btn">📥 ייצא ל-iCal</button>
+      <div class="controls">
+        <button id="toggleViewBtn" class="secondary-btn">
+          🔄 מעבר לתצוגה שבועית
+        </button>
+        <button id="exportBtn" class="secondary-btn">📥 ייצא ל-iCal</button>
+      </div>
+
+      <div class="weekdays">
+        <div>א'</div>
+        <div>ב'</div>
+        <div>ג'</div>
+        <div>ד'</div>
+        <div>ה'</div>
+        <div>ו'</div>
+        <div>ש'</div>
+      </div>
+
+      <div id="daysContainer" class="days-grid"></div>
+    </div>
+
+    <!-- חלון קופץ (Modal) מעוצב להוספה/עריכה של אירוע -->
+    <div id="eventModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h3 id="modalTitle">הוסף אירוע</h3>
+        <p id="modalDateDisplay"></p>
+        <input type="text" id="eventInput" placeholder="הכנס תיאור אירוע..." autocomplete="off" />
+        <div class="modal-buttons">
+          <button id="saveEventBtn" class="btn-save">שמור</button>
+          <button id="deleteEventBtn" class="btn-delete hidden">מחק אירוע</button>
+          <button id="cancelEventBtn" class="btn-cancel">ביטול</button>
         </div>
-
-        <div class="weekdays">
-            <div>א'</div><div>ב'</div><div>ג'</div><div>ד'</div><div>ה'</div><div>ו'</div><div>ש'</div>
-        </div>
-
-        <div id="daysContainer" class="days-grid"></div>
+      </div>
     </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
